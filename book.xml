@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<catalog>
+    <cd>
+        <title>RAM</title>
+        <artist>Dashrath</artist>
+        <price>unlimited</price>
+        <year>5114 BCE</year>
+    </cd>
+    <cd>
+        <title>Hanuman</title>
+        <artist>Vayu</artist>
+        <price>unlimited</price>
+        <year>5114 BCE</year>
+    </cd>
+    <cd>
+        <title>Sahil</title>
+        <artist>Jentibhai</artist>
+        <price>unlimited</price>
+        <year>2003</year>
+    </cd>
+</catalog>

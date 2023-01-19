@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <table id="mytbl" border="1" align="center"></table>
+    <button onclick="load()">Change Content</button>
+    <script>
+        function load(){
+            if(window.XMLHttpRequest){
+                request = new XMLHttpRequest();
+            } else if(window.ActiveXObject){
+                request = new ActiveXObject("Microsoft.XMLHttpRequest");
+            }
+            request.onreadystatechange = function() {
+                if(this.readyState == 4 && this.status == 200){
+                    displayXML(this);
+                }
+            }
+            request.open("get","book.xml",true);
+            request.send();
+        }
+        function displayXML(xml){
+            var xmldoc = xml.responseXML;
+            var tit = xmldoc.getElementsByTagName("cd");
+            var table="<tr><th>Title</th><th>Artist</th></tr>";
+            for(var i=0; i<(tit.length);i++){
+                table+="<tr><td>"+
+                tit[i].getElementsByTagName("title")[0].childNodes[0].nodeValue+"</td><td>"+
+                tit[i].getElementsByTagName("artist")[0].childNodes[0].nodeValue+"</td></td>";
+            }
+            document.getElementById('mytbl').innerHTML = table
+            
+        }
+    </script>
+</body>
+</html>

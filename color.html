@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Namaste World</h1>
+    <table id = "mytable" align="center" border="1">
+        <tr>
+            <th>text</th>
+            <th>color</th>
+        </tr>
+    </table>
+    <button onclick="load()">Change Content</button>
+    <script>
+        function load() {  
+            if(window.XMLHttpRequest){
+                request = new XMLHttpRequest();
+            } else if(window.ActiveXObject){
+                request = new ActiveXObject("Microsoft.XMLHttpRequest")
+            }
+            var table = document.getElementById("mytable");
+            request.onreadystatechange = function() {
+                if(this.readyState == 4 && this.status == 200){
+                    var jsonObj = JSON.parse(this.responseText);
+                    for(var i=0;i<(jsonObj.length); i++){
+                        dt=jsonObj[i];
+                        var row = table.insertRow(i+1);
+                        var cell1 = row.insertCell(0);
+                        var cell2 = row.insertCell(1);
+                        cell1.innerHTML = jsonObj[i].text;
+                        cell2.innerHTML = jsonObj[i].color;
+                    }
+                }
+            };
+            request.open("get","color.json",true);
+            request.send();
+        }
+
+    </script>
+</body>
+</html>

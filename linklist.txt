@@ -1,0 +1,127 @@
+import java.util.List;
+import java.util.Scanner;
+
+class LL {
+  // create node
+  class Node {
+    int data;
+    Node next;
+
+    Node(int data) {
+      this.data = data;
+      this.next = null;
+    }
+  }
+
+  Node head;
+
+  public void addFirst(int data) {
+    Node newNode = new Node(data);
+    if (head == null) {
+      head = newNode;
+      return;
+    } else {
+      newNode.next = head;
+      head = newNode;
+    }
+  }
+
+  public void addLast(int data) {
+    Node newNode = new Node(data);
+    if (head == null) {
+      head = newNode;
+      return;
+    } else {
+      Node currNode = head;
+      while (currNode.next != null) {
+        currNode = currNode.next;
+      }
+      currNode.next = newNode;
+    }
+  }
+
+  public void deleteFirst() {
+    if (head == null) {
+      System.out.println("Linked list is empty");
+      return;
+    } else {
+      head = head.next;
+    }
+  }
+
+  public void deleteLast() {
+    if (head == null) {
+      System.out.println("Linked list is empty");
+      return;
+    }
+    if (head.next == null) {
+      head = null;
+    } else {
+      Node secLast = head;
+      Node last = head.next;
+      while (last.next != null) {
+        last = last.next;
+        secLast = secLast.next;
+      }
+      secLast.next = null;
+    }
+  }
+
+  public void display() {
+    if (head == null) {
+      System.out.println("Linked list is empty");
+      return;
+    } else {
+      Node currNode = head;
+      while (currNode != null) {
+        System.out.println("DATA = " + currNode.data);
+        currNode = currNode.next;
+      }
+      System.out.println(" ");
+    }
+  }
+
+  public static void main(String[] args) {
+    LL list = new LL();
+    Scanner sc = new Scanner(System.in);
+    int ch, addData;
+    System.out.println("------------------ LINKED LIST -----------------");
+    do {
+      System.out.println("Insert data in first (Press 1)");
+      System.out.println("Insert data in last (Press 2)");
+      System.out.println("Delete data at First (Press 3)");
+      System.out.println("Delete data at last (Press 4)");
+      System.out.println("Display data (Press 5)");
+      System.out.println("Exit (press 6)");
+      ch = sc.nextInt();
+      switch (ch) {
+        case 1:
+          System.out.println("Enter a value in first position");
+          addData = sc.nextInt();
+          list.addFirst(addData);
+          break;
+        case 2:
+          System.out.println("Enter a value in Last position");
+          addData = sc.nextInt();
+          list.addLast(addData);
+          break;
+        case 3:
+          System.out.println("Delete data at First");
+          list.deleteFirst();
+          break;
+        case 4:
+          System.out.println("Delete data at Last");
+          list.deleteLast();
+          break;
+        case 5:
+          System.out.println("Displaying data...");
+          list.display();
+          break;
+        case 6:
+          System.out.println("Thank you!");
+          break;
+      }
+    } while (ch != 6);
+
+  }
+}

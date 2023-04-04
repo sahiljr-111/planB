@@ -1,0 +1,215 @@
+			       StudentMgtSystem
+
+Insert,Update,Delete,Navigation,Ascending,Descending,Display Data in Datagridview
+==================================================================================
+Student.vb(Class)
+=================
+Imports System.Data.OleDb
+
+Public Class Student
+    Dim cn As New OleDbConnection("Provider=Microsoft.ACE.OLEDB.12.0;Data Source=C:\Users\LENOVO PC\Desktop\Anahita\VB.Net\StudentMgtSystem\Student.accdb")
+    Dim cm As OleDbCommand
+    Dim da As OleDbDataAdapter
+    Dim ds As New DataSet
+
+    Public Sub IUD(ByVal str As String)
+        If cn.State = ConnectionState.Closed Then
+            cn.Open()
+        End If
+        cm = New OleDbCommand(str, cn)
+        cm.ExecuteNonQuery()
+        cn.Close()
+
+    End Sub
+
+    Public Function Display(ByVal str As String) As DataSet
+        'Disconnected Model
+        da = New OleDbDataAdapter(str, cn)
+        ds.Tables.Clear()
+        da.Fill(ds)
+        Return ds
+    End Function
+
+End Class
+
+
+StudMast.vb(Form)
+=================
+Public Class StudMast
+    Dim ds As New DataSet
+    Dim gender As String = ""
+    Dim maxrow, inc As Integer
+    Dim s1 As New Student
+
+    Private Sub Form1_Load(sender As System.Object, e As System.EventArgs) Handles MyBase.Load
+        'Disconnected(Model)
+        ds = s1.Display("select * from CourseMast")
+        cmbCourse.DataSource = ds.Tables(0)
+        cmbCourse.DisplayMember = "CourseName"
+        cmbCourse.ValueMember = "CourseId"
+
+        'Connected(Model)
+        'cm = New OleDbCommand("select * from CourseMast", cn)
+        'cn.Open()
+        'dr = cm.ExecuteReader()
+        'If dr.HasRows Then
+        '    While dr.Read
+        '        cmbCourse.Items.Add(dr("CourseName").ToString)
+        '    End While
+        'End If
+        'cn.Close()
+
+        FillStudentData()
+    End Sub
+
+    Private Sub FillStudentData()
+        ds = s1.Display("select s.RNo,s.SName,s.Address,s.Phone,s.Email,s.Gender,c.CourseName from Student s,CourseMast c where c.CourseId=s.CourseId order by RNo")
+        DataGridView1.DataSource = ds.Tables(0)
+        maxrow = ds.Tables(0).Rows.Count
+    End Sub
+
+    Private Sub DisplayRecord()
+        txtRNo.Text = ds.Tables(0).Rows(inc).Item(0)
+        txtName.Text = ds.Tables(0).Rows(inc).Item(1)
+        txtAdd.Text = ds.Tables(0).Rows(inc).Item(2)
+        txtPhone.Text = ds.Tables(0).Rows(inc).Item(3)
+        txtEmail.Text = ds.Tables(0).Rows(inc).Item(4)
+        Dim gender As String = ds.Tables(0).Rows(inc).Item(5)
+        If gender = "Male" Then
+            rbMale.Checked = True
+        ElseIf gender = "Female" Then
+            rbFemale.Checked = True
+        End If
+        cmbCourse.Text = ds.Tables(0).Rows(inc).Item(6)
+    End Sub
+
+    Private Sub btnInsert_Click(sender As System.Object, e As System.EventArgs) Handles btnInsert.Click
+        If rbMale.Checked = True Then
+            gender = "Male"
+        ElseIf rbFemale.Checked = True Then
+            gender = "Female"
+        End If
+
+        s1.IUD("Insert into Student values(" & txtRNo.Text & ",'" & txtName.Text & "','" & txtAdd.Text & "','" & txtPhone.Text & "','" & txtEmail.Text & "','" & gender & "'," & cmbCourse.SelectedValue & ")")
+        FillStudentData()
+        clearControls()
+    End Sub
+
+    Private Sub btnUpdate_Click(sender As System.Object, e As System.EventArgs) Handles btnUpdate.Click
+        If rbMale.Checked = True Then
+            gender = "Male"
+        ElseIf rbFemale.Checked = True Then
+            gender = "Female"
+        End If
+
+        s1.IUD("Update Student set SName='" & txtName.Text & "',Address='" & txtAdd.Text & "',Phone='" & txtPhone.Text & "',Email='" & txtEmail.Text & "',Gender='" & gender & "',CourseId=" & cmbCourse.SelectedValue & " where RNo=" & txtRNo.Text)
+
+        ds.Tables(0).Clear()
+        FillStudentData()
+        clearControls()
+    End Sub
+
+    Private Sub btnDelete_Click(sender As System.Object, e As System.EventArgs) Handles btnDelete.Click
+        s1.IUD("Delete from Student where RNo=" & txtRNo.Text)
+        FillStudentData()
+        clearControls()
+    End Sub
+
+    Private Sub btnExit_Click(sender As System.Object, e As System.EventArgs) Handles btnExit.Click
+        Me.Close()
+    End Sub
+
+    Private Sub btnFilter_Click(sender As System.Object, e As System.EventArgs) Handles btnFilter.Click
+        FilterData.Show()
+    End Sub
+
+    Private Sub btnFirst_Click(sender As System.Object, e As System.EventArgs) Handles btnFirst.Click
+        If inc < 0 Then
+            MessageBox.Show("Empty Dataset")
+        Else
+            inc = 0
+            DisplayRecord()
+        End If
+    End Sub
+
+    Private Sub btnLast_Click(sender As System.Object, e As System.EventArgs) Handles btnLast.Click
+        If inc < 0 Then
+            MessageBox.Show("Empty Dataset")
+        Else
+            inc = maxrow - 1
+            DisplayRecord()
+        End If
+    End Sub
+
+    Private Sub btnPrevious_Click(sender As System.Object, e As System.EventArgs) Handles btnPrevious.Click
+        If inc = 0 Then
+            MessageBox.Show("First Rec...")
+        Else
+            inc -= 1
+            DisplayRecord()
+        End If
+    End Sub
+
+    Private Sub btnNext_Click(sender As System.Object, e As System.EventArgs) Handles btnNext.Click
+        If inc = maxrow - 1 Then
+            MessageBox.Show("Last Rec...")
+        Else
+            inc += 1
+            DisplayRecord()
+        End If
+    End Sub
+
+    Private Sub DataGridView1_CellClick(sender As Object, e As System.Windows.Forms.DataGridViewCellEventArgs) Handles DataGridView1.CellClick
+        inc = e.RowIndex
+        txtRNo.Text = DataGridView1.Rows(inc).Cells(0).Value
+        txtName.Text = DataGridView1.Rows(inc).Cells(1).Value
+        txtAdd.Text = DataGridView1.Rows(inc).Cells(2).Value
+        txtPhone.Text = DataGridView1.Rows(inc).Cells(3).Value
+        txtEmail.Text = DataGridView1.Rows(inc).Cells(4).Value
+        gender = ds.Tables(0).Rows(inc).Item(5)
+        If gender = "Male" Then
+            rbMale.Checked = True
+        ElseIf gender = "Female" Then
+            rbFemale.Checked = True
+        End If
+        cmbCourse.Text = DataGridView1.Rows(inc).Cells(6).Value
+
+    End Sub
+
+    Private Sub btnAsc_Click(sender As System.Object, e As System.EventArgs) Handles btnAsc.Click
+        Dim oview As New DataView(ds.Tables(0))
+        oview.Sort = "RNo asc"
+        DataGridView1.DataSource = oview
+    End Sub
+
+    Private Sub btnDesc_Click(sender As System.Object, e As System.EventArgs) Handles btnDesc.Click
+        Dim oview As New DataView(ds.Tables(0))
+        oview.Sort = "RNo desc"
+        DataGridView1.DataSource = oview
+    End Sub
+
+    Private Sub clearControls()
+        txtRNo.Text = ""
+        txtName.Text = ""
+        txtAdd.Text = ""
+        txtPhone.Text = ""
+        txtEmail.Text = ""
+        rbMale.Checked = False
+        rbFemale.Checked = False
+        cmbCourse.Text = ""
+    End Sub
+
+End Class
+
+
+FilterData.vb(Filter-Data Form)
+===============================
+Public Class FilterData
+    Dim s1 As New Student
+    Dim ds As New DataSet
+
+    Private Sub btnSearch_Click(sender As System.Object, e As System.EventArgs) Handles btnSearch.Click
+        ds = s1.Display("select s.RNo,s.SName,s.Address,s.Phone,s.Email,s.Gender,c.CourseName from Student s,CourseMast c where c.CourseId=s.CourseId and SName like '" & txtSName.Text & "%' order by RNo")
+        DataGridView1.DataSource = ds.Tables(0)
+    End Sub
+End Class

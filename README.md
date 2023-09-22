@@ -1,10 +1,13 @@
 //class file
 
 Imports System.Data.OleDb
+
 Imports System.Data
+
 Imports Microsoft.VisualBasic
 
 Public Class Class1
+
     Dim cn As New OleDbConnection("Provider=Microsoft.ACE.OLEDB.12.0;Data Source=D:\sahil\prac\prac\pracdb1.accdb")
     Dim cm As OleDbCommand
     Dim da As OleDbDataAdapter
@@ -23,5 +26,6 @@ Public Class Class1
         da.Fill(ds)
         Return ds
     End Function
+    
 End Class
 

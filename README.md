@@ -8,7 +8,7 @@ Imports Microsoft.VisualBasic
 
 Public Class Class1
 
-    Dim cn As New OleDbConnection("Provider=Microsoft.ACE.OLEDB.12.0;Data Source=D:\sahil\prac\prac\pracdb1.accdb")
+    Dim cn As New OleDbConnection(" ")
     Dim cm As OleDbCommand
     Dim da As OleDbDataAdapter
     Dim ds As New DataSet

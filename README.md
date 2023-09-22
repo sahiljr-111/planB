@@ -5,11 +5,10 @@ Imports System.Data
 Imports Microsoft.VisualBasic
 
 Public Class Class1
-    Dim cn As New OleDbConnection("")
+    Dim cn As New OleDbConnection("Provider=Microsoft.ACE.OLEDB.12.0;Data Source=D:\sahil\prac\prac\pracdb1.accdb")
     Dim cm As OleDbCommand
     Dim da As OleDbDataAdapter
     Dim ds As New DataSet
-
     Public Sub iud(ByVal str As String)
         If cn.State = ConnectionState.Closed = True Then
             cn.Open()
